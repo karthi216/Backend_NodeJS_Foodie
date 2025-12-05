@@ -1,34 +1,40 @@
 const express = require("express");
 const dotEnv = require('dotenv');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
 const vendorRoutes = require('./routes/vendorRoutes');
-const bodyParser = require('body-parser');
 const firmRoutes = require('./routes/firmRoutes');
 const productRoutes = require('./routes/productRoutes');
-const cors = require('cors');
-const path = require('path')
 
-const app = express()
+dotEnv.config();
+
+const app = express();
 
 const PORT = process.env.PORT || 4000;
 
-dotEnv.config();
-app.use(cors())
+// Middlewares
+app.use(cors());
+app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB connected successfully!"))
-    .catch((error) => console.log(error))
-
-app.use(bodyParser.json());
-app.use('/vendor', vendorRoutes);
-app.use('/firm', firmRoutes)
-app.use('/product', productRoutes);
+// Static folder for images
 app.use('/uploads', express.static('uploads'));
 
-app.listen(PORT, () => {
-    console.log(`server started and running at ${PORT}`);
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((error) => console.log(error));
+
+// Routes
+app.use('/vendor', vendorRoutes);
+app.use('/firm', firmRoutes);
+app.use('/product', productRoutes);
+
+// Health / root route
+app.get('/', (req, res) => {
+  res.send("<h1>Welcome to FOODIE</h1>");
 });
 
-app.use('/', (req, res) => {
-    res.send("<h1> Welcome to FOODIE");
-})
+app.listen(PORT, () => {
+  console.log(`Server started and running at ${PORT}`);
+});
