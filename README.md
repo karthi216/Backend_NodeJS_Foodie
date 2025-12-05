@@ -23,7 +23,7 @@ npm install
 Create a `.env` file:
 ```
 MONGODB_URI=your_mongodb_connection
-PORT=5000
+PORT=4000
 JWT_SECRET=your_secret_key
 ```
 
@@ -46,3 +46,4 @@ npm start
 
 ## License
 MIT
+
